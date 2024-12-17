@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with BublyMind🥰</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            width: 400px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .chat-header {
+            background-color: #ff5e99;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .bot-message {
+            background-color: #f1f0f0;
+            align-self: flex-start;
+        }
+        .user-message {
+            background-color: #ff5e99;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        #user-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #send-btn {
+            background-color: #ff5e99;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .appointment-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #ff5e99;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            width: 80%;
+        }
+        .input-area.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Chat with BublyMind🥰</div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="input-area" id="input-area">
+            <input type="text" id="user-input" placeholder="Tulis perasaan anda dan jawab pertanyaan (ya/tidak)">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const inputArea = document.getElementById('input-area');
+
+        function addMessage(message, type) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', `${type}-message`);
+            messageElement.textContent = message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendAnswer() {
+    const userInput = document.getElementById('userInput').value;
+    fetch('/process_answer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ answer: userInput })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('botResponse').textContent = data.bot_response;
+        document.getElementById('question').textContent = data.question;
+    }
+);
+}
+
+        function addAppointmentButton(link) {
+            const buttonElement = document.createElement('a');
+            buttonElement.href = link;
+            buttonElement.textContent = 'Buat Janji dengan Psikolog/Psikiater';
+            buttonElement.classList.add('appointment-button');
+            chatMessages.appendChild(buttonElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Hide input area
+            inputArea.classList.add('hidden');
+        }
+
+        // Start the chat
+        fetch('/start_chat')
+            .then(response => response.json())
+            .then(data => {
+                addMessage(data.question, 'bot');
+            });
+
+        sendBtn.addEventListener('click', () => {
+            const answer = userInput.value.trim();
+            if (!answer) return;
+
+            // Show user's message
+            addMessage(answer, 'user');
+            userInput.value = '';
+
+            // Send answer to server
+            fetch('/process_answer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ answer: answer })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_complete) {
+                    // Show final result
+                    addMessage(data.result, 'bot');
+
+                    // Add appointment button if link is available
+                    if (data.appointment_link) {
+                        addAppointmentButton(data.appointment_link);
+                    }
+                } else {
+                    // Show next question
+                    addMessage(data.question, 'bot');
+                }
+            });
+        });
+
+        // Allow sending with Enter key
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

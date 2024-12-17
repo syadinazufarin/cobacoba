@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffe6f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #ff66b2;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input, select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            background-color: #ff66b2;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #ff3385;
+        }
+        #confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .whatsapp-button {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Appointment Form</h1>
+        <form id="appointmentForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="domicile">Domicile:</label>
+            <input type="text" id="domicile" name="domicile" required>
+
+            <label for="healthcare">Healthcare Facility:</label>
+            <select id="healthcare" name="healthcare" required>
+                <option value="">Select Your Healthcare</option>
+                <option value="RS Hermina Purwokerto">RS Hermina Purwokerto</option>
+            </select>
+
+            <label for="doctor">Choose Your Psikiater/Psikolog/Terapis:</label>
+            <select id="doctor" name="specialist" required>
+                <option value="">Select Psikiater/Psikolog/Terapis</option>
+                <option value="Dr. Dohyun Lim, M.Si., Psikolog - Psikologi Klinis">Dr. Dohyun Lim, M.Si., Psikolog - Psikologi Klinis</option>
+                <option value="Minji Kim, S.Psi - Terapis">Minji Kim, S.Psi - Terapis</option>
+                <option value="dr. Christopher Bang, Sp. Kj. - Psikiater">dr. Christopher Bang, Sp. Kj. - Psikiater</option>
+            </select>
+
+            <label for="schedule">Preferred Schedule:</label>
+            <input type="datetime-local" id="schedule" name="schedule" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal">
+        <div class="modal-content">
+            <h2>Appointment Submitted</h2>
+            <p>Terima kasih sudah mengajukan appointment. Harap hubungi admin untuk konfirmasi:</p>
+            <button><a href="/" target="_blank" style= "text-decoration: none; color: white;">Kembali ke Beranda</a></button>
+            <a href="https://wa.me/6289313190516" target="_blank" class="whatsapp-button">Hubungi Admin via WhatsApp</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Here you would typically send the form data to your backend
+            // For this example, we'll just show the confirmation modal
+            const modal = document.getElementById('confirmation-modal');
+            modal.style.display = 'flex';
+        });
+
+        // Optional: Close modal when clicking outside
+        document.getElementById('confirmation-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
